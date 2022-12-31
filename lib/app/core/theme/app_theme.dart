@@ -21,5 +21,8 @@ class AppTheme {
       selectedItemColor: appColorScheme.primary,
       unselectedItemColor: AppColors.grey,
     ),
+    tabBarTheme: const TabBarTheme(
+      indicatorSize: TabBarIndicatorSize.label,
+    ),
   );
 }

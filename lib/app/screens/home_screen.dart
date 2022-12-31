@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movies_app/app/core/theme/app_colors.dart';
 import 'package:movies_app/app/core/values/app_images.dart';
+import 'package:movies_app/app/global/custom_tab_bar.dart';
 import 'package:movies_app/app/global/search_field.dart';
 import 'package:movies_app/app/global/stroke_text.dart';
+import 'package:movies_app/app/screens/details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -83,18 +85,29 @@ class _HomeScreenState extends State<HomeScreen>
                     itemBuilder: (context, index) {
                       return Stack(
                         children: [
-                          Image.asset(
-                            movies[index],
-                            width: MediaQuery.of(context).size.width * .4,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: ((context) => const DetailsScreen()),
+                                ),
+                              );
+                            },
+                            child: Image.asset(
+                              movies[index],
+                              width: MediaQuery.of(context).size.width * .4,
+                            ),
                           ),
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: StrokeText(
-                              text: "${index + 1}",
-                              color: Theme.of(context).colorScheme.background,
-                              fontSize: 96,
-                              strokeWidth: 0.9,
-                              fontWeight: FontWeight.w600,
+                          IgnorePointer(
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: StrokeText(
+                                text: "${index + 1}",
+                                color: Theme.of(context).colorScheme.background,
+                                fontSize: 96,
+                                strokeWidth: 0.9,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ],
@@ -102,12 +115,8 @@ class _HomeScreenState extends State<HomeScreen>
                     },
                   ),
                 ),
-                TabBar(
-                  controller: _tabController,
-                  isScrollable: true,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  indicatorWeight: 4,
-                  indicatorColor: AppColors.searchGrey,
+                CustomTabBar(
+                  tabController: _tabController,
                   onTap: ((value) {
                     setState(() {
                       selectedTabIndex = value;
