@@ -1,10 +1,10 @@
 import 'package:flutter/services.dart';
 
 class EnvUtil {
-  static final EnvUtil _singleton = EnvUtil._internal();
+  static final EnvUtil _instance = EnvUtil._internal();
 
   factory EnvUtil() {
-    return _singleton;
+    return _instance;
   }
 
   EnvUtil._internal();

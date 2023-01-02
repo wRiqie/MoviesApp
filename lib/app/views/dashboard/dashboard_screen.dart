@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:movies_app/app/core/values/app_images.dart';
-import 'package:movies_app/app/screens/home_screen.dart';
+import 'package:movies_app/app/views/home/home_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

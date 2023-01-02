@@ -1,0 +1,1 @@
+enum ELoading {idle, loading, success}

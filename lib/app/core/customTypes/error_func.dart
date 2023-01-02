@@ -1,0 +1,1 @@
+typedef ErrorFunc = void Function(String);

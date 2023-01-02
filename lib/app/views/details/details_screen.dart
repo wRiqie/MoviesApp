@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:movies_app/app/controllers/details_controller.dart';
 import 'package:movies_app/app/core/theme/app_colors.dart';
-import 'package:movies_app/app/core/utils/env_util.dart';
 import 'package:movies_app/app/core/values/app_images.dart';
+import 'package:movies_app/app/data/providers/api_provider.dart';
+import 'package:movies_app/app/data/repositories/details_repository.dart';
 import 'package:movies_app/app/global/custom_tab_bar.dart';
-import 'package:movies_app/app/screens/tabs/details/about.dart';
-import 'package:movies_app/app/screens/tabs/details/cast.dart';
-import 'package:movies_app/app/screens/tabs/details/reviews.dart';
+import 'package:movies_app/app/views/details/states/details_state.dart';
+import 'package:movies_app/app/views/details/stores/details_store.dart';
+import 'package:movies_app/app/views/details/tabs/about.dart';
+import 'package:movies_app/app/views/details/tabs/cast.dart';
+import 'package:movies_app/app/views/details/tabs/reviews.dart';
+import 'package:provider/provider.dart';
 
 class DetailsScreen extends StatefulWidget {
-  const DetailsScreen({super.key});
+  final int movieId;
+  const DetailsScreen({
+    super.key,
+    required this.movieId,
+  });
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -26,6 +35,9 @@ class _DetailsScreenState extends State<DetailsScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) { 
+      context.read<DetailsStore>().fetchAll(widget.movieId);
+    });
   }
 
   @override
@@ -41,6 +53,9 @@ class _DetailsScreenState extends State<DetailsScreen>
       const ReviewsTab(),
       const CastTab(),
     ];
+
+    final store = context.watch<DetailsStore>();
+    final state = store.value;
 
     return Scaffold(
       appBar: AppBar(
@@ -59,22 +74,7 @@ class _DetailsScreenState extends State<DetailsScreen>
         child: SingleChildScrollView(
           child: Stack(
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * .3,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      AppImages.poster,
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(16),
-                    bottomRight: Radius.circular(16),
-                  ),
-                ),
-              ),
+              backdropWidget(state),
               SizedBox(
                 height: MediaQuery.of(context).size.height * .3,
                 child: Align(
@@ -97,14 +97,7 @@ class _DetailsScreenState extends State<DetailsScreen>
                         const SizedBox(
                           width: 5,
                         ),
-                        Text(
-                          '9.5',
-                          style: GoogleFonts.montserrat(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
+                        voteAverageWidget(state),
                       ],
                     ),
                   ),
@@ -118,50 +111,11 @@ class _DetailsScreenState extends State<DetailsScreen>
                     SizedBox(
                       height: MediaQuery.of(context).size.height * .20,
                     ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Image.asset(
-                          AppImages.movieTwo,
-                          width: 95,
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * .6,
-                          child: Text(
-                            'Spiderman No Way Home',
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 22,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    posterTitleWidget(state),
                     const SizedBox(
                       height: 15,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildTagText(
-                          text: '2021',
-                          icon: AppImages.calendarIcon,
-                        ),
-                        _buildHorizontalSeparator(),
-                        _buildTagText(
-                          text: '148 Minutes',
-                          icon: AppImages.clockIcon,
-                        ),
-                        _buildHorizontalSeparator(),
-                        _buildTagText(
-                          text: 'Action',
-                          icon: AppImages.ticketIcon,
-                        ),
-                      ],
-                    ),
+                    movieDetailsWidget(state),
                     const SizedBox(
                       height: 24,
                     ),
@@ -228,5 +182,97 @@ class _DetailsScreenState extends State<DetailsScreen>
       height: 10,
       color: Theme.of(context).colorScheme.onSurface,
     );
+  }
+
+  Widget backdropWidget(DetailsState state) {
+    if (state is SuccessDetailsState) {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * .3,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(
+              state.details.backdropUrl,
+            ),
+            fit: BoxFit.cover,
+          ),
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(16),
+            bottomRight: Radius.circular(16),
+          ),
+        ),
+      );
+    }
+    return Container();
+  }
+
+  Widget voteAverageWidget(DetailsState state) {
+    if (state is SuccessDetailsState) {
+      return Text(
+        (state.details.voteAverage ?? 0.0).toStringAsFixed(2),
+        style: GoogleFonts.montserrat(
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
+      );
+    }
+    return Container();
+  }
+
+  Widget posterTitleWidget(DetailsState state) {
+    if (state is SuccessDetailsState) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.network(
+              state.details.posterUrl,
+              width: 95,
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .6,
+            child: Text(
+              state.details.title,
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                fontSize: 22,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return Container();
+  }
+
+  Widget movieDetailsWidget(DetailsState state) {
+    if (state is SuccessDetailsState) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildTagText(
+            text: state.details.releaseDateYear,
+            icon: AppImages.calendarIcon,
+          ),
+          _buildHorizontalSeparator(),
+          _buildTagText(
+            text: '${state.details.runTime} Minutes',
+            icon: AppImages.clockIcon,
+          ),
+          _buildHorizontalSeparator(),
+          _buildTagText(
+            text: state.details.genre,
+            icon: AppImages.ticketIcon,
+          ),
+        ],
+      );
+    }
+    return Container();
   }
 }

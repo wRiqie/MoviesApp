@@ -13,19 +13,19 @@ class InnerShadow extends SingleChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    final renderObject = _RenderInnerShadow();
+    final renderObject = RenderInnerShadow();
     updateRenderObject(context, renderObject);
     return renderObject;
   }
 
   @override
   void updateRenderObject(
-      BuildContext context, _RenderInnerShadow renderObject) {
+      BuildContext context, RenderInnerShadow renderObject) {
     renderObject.shadows = shadows;
   }
 }
 
-class _RenderInnerShadow extends RenderProxyBox {
+class RenderInnerShadow extends RenderProxyBox {
   late List<Shadow> shadows;
 
   @override
