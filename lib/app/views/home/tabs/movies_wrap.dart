@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/app/core/utils/helpers.dart';
 import 'package:movies_app/app/global/skeleton_card.dart';
 import 'package:movies_app/app/views/details/details_screen.dart';
 import 'package:movies_app/app/views/home/states/movies_state.dart';
@@ -73,7 +74,7 @@ class _MoviesWrapState<T extends MovieStore> extends State<MoviesWrap> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.network(
-                  e.imgUrl,
+                  Helpers.getImageUrl(e.imgPath),
                   width: MediaQuery.of(context).size.width * .25,
                 ),
               ),

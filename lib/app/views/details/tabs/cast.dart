@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:movies_app/app/core/utils/helpers.dart';
 import 'package:movies_app/app/core/values/app_images.dart';
 import 'package:movies_app/app/global/skeleton_card.dart';
 import 'package:movies_app/app/views/details/states/cast_state.dart';
 import 'package:movies_app/app/views/details/stores/cast_store.dart';
-import 'package:movies_app/app/views/home/stores/movie_store.dart';
 import 'package:provider/provider.dart';
 
 class CastTab extends StatefulWidget {
@@ -61,7 +61,7 @@ class _CastTabState extends State<CastTab> {
             .map(
               (e) => _buildCast(
                 context,
-                actorPhoto: e.profilePhoto,
+                actorPhoto: e.profilePath,
                 actorName: e.name,
               ),
             )
@@ -78,7 +78,7 @@ class _CastTabState extends State<CastTab> {
       children: [
         actorPhoto != null
             ? CircleAvatar(
-                backgroundImage: NetworkImage(actorPhoto),
+                backgroundImage: NetworkImage(Helpers.getImageUrl(actorPhoto)),
                 radius: (MediaQuery.of(context).size.width * .35) / 2,
               )
             : CircleAvatar(

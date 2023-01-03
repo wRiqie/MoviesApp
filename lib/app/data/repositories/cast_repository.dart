@@ -1,12 +1,11 @@
-import 'package:movies_app/app/data/models/actor.dart';
 import 'package:movies_app/app/data/models/movie_actors.dart';
-import 'package:movies_app/app/data/providers/api_provider.dart';
+import 'package:movies_app/app/data/providers/base_provider.dart';
 
 import '../../core/utils/env_util.dart';
 import '../../core/values/constants.dart';
 
 class CastRepository {
-  final ApiProvider<MovieActors> _provider;
+  final BaseProvider<MovieActors> _provider;
 
   CastRepository(this._provider);
 

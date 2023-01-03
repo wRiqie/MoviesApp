@@ -3,13 +3,16 @@ import 'package:movies_app/app/core/theme/app_theme.dart';
 import 'package:movies_app/app/data/models/movie.dart';
 import 'package:movies_app/app/data/models/movie_actors.dart';
 import 'package:movies_app/app/data/models/movie_details.dart';
+import 'package:movies_app/app/data/models/review.dart';
 import 'package:movies_app/app/data/providers/api_provider.dart';
 import 'package:movies_app/app/data/repositories/cast_repository.dart';
 import 'package:movies_app/app/data/repositories/details_repository.dart';
 import 'package:movies_app/app/data/repositories/movie_repository.dart';
+import 'package:movies_app/app/data/repositories/reviews_repository.dart';
 import 'package:movies_app/app/views/dashboard/dashboard_screen.dart';
 import 'package:movies_app/app/views/details/stores/cast_store.dart';
 import 'package:movies_app/app/views/details/stores/details_store.dart';
+import 'package:movies_app/app/views/details/stores/reviews_store.dart';
 import 'package:movies_app/app/views/home/stores/now_playing_movies_store.dart';
 import 'package:movies_app/app/views/home/stores/popular_movies_store.dart';
 import 'package:movies_app/app/views/home/stores/top_rated_movies_store.dart';
@@ -43,6 +46,8 @@ final _providers = [
   Provider(create: (context) => ApiProvider<Movie>()),
   Provider(create: (context) => ApiProvider<MovieDetails>()),
   Provider(create: (context) => ApiProvider<MovieActors>()),
+  Provider(create: (context) => ApiProvider<Review>()),
+
   // Repositories
   Provider(
       create: (context) => MovieRepository(context.read<ApiProvider<Movie>>())),
@@ -52,6 +57,10 @@ final _providers = [
   Provider(
       create: ((context) =>
           CastRepository(context.read<ApiProvider<MovieActors>>()))),
+  Provider(
+      create: ((context) =>
+          ReviewRepository(context.read<ApiProvider<Review>>()))),
+
   // Stores
   ChangeNotifierProvider(
       create: ((context) => TrendingMoviesStore(context.read()))),
@@ -65,4 +74,5 @@ final _providers = [
       create: ((context) => UpcomingMoviesStore(context.read()))),
   ChangeNotifierProvider(create: ((context) => DetailsStore(context.read()))),
   ChangeNotifierProvider(create: ((context) => CastStore(context.read()))),
+  ChangeNotifierProvider(create: ((context) => ReviewsStore(context.read()))),
 ];

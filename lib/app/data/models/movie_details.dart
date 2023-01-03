@@ -1,5 +1,3 @@
-import '../../core/values/constants.dart';
-
 class MovieDetails {
   final int id;
   final String title;
@@ -38,7 +36,4 @@ class MovieDetails {
   }
 
   String get releaseDateYear => releaseDate.split('-')[0];
-
-  String get posterUrl => Constants.imageBaseUrl + posterPath;
-  String get backdropUrl => Constants.imageBaseUrl + backdropPath;
 }

@@ -1,5 +1,3 @@
-import '../../core/values/constants.dart';
-
 class Actor {
   final int id;
   final String name;
@@ -8,7 +6,7 @@ class Actor {
   Actor({
     required this.id,
     required this.name,
-    required this.profilePath,
+    this.profilePath,
   });
 
   factory Actor.fromMap(Map<String, dynamic> map) {
@@ -18,7 +16,4 @@ class Actor {
       profilePath: map['profile_path'],
     );
   }
-
-  String? get profilePhoto =>
-      profilePath != null ? Constants.imageBaseUrl + profilePath! : null;
 }

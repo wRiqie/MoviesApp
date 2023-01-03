@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:movies_app/app/core/theme/app_colors.dart';
+import 'package:movies_app/app/core/utils/helpers.dart';
 import 'package:movies_app/app/core/values/app_images.dart';
 import 'package:movies_app/app/global/custom_tab_bar.dart';
 import 'package:movies_app/app/views/details/states/details_state.dart';
@@ -48,7 +49,7 @@ class _DetailsScreenState extends State<DetailsScreen>
 
     List<Widget> tabViews = [
       const AboutTab(),
-      const ReviewsTab(),
+      ReviewsTab(movieId: widget.movieId),
       CastTab(movieId: widget.movieId),
     ];
 
@@ -200,7 +201,7 @@ class _DetailsScreenState extends State<DetailsScreen>
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-              state.details.backdropUrl,
+              Helpers.getImageUrl(state.details.backdropPath),
             ),
             fit: BoxFit.cover,
           ),
@@ -217,7 +218,7 @@ class _DetailsScreenState extends State<DetailsScreen>
   Widget voteAverageWidget(DetailsState state) {
     if (state is SuccessDetailsState) {
       return Text(
-        (state.details.voteAverage ?? 0.0).toStringAsFixed(2),
+        (state.details.voteAverage ?? 0.0).toStringAsFixed(1),
         style: GoogleFonts.montserrat(
           fontWeight: FontWeight.w600,
           fontSize: 12,
@@ -236,7 +237,7 @@ class _DetailsScreenState extends State<DetailsScreen>
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Image.network(
-              state.details.posterUrl,
+              Helpers.getImageUrl(state.details.posterPath),
               width: 95,
             ),
           ),

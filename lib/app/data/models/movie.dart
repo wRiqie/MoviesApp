@@ -1,5 +1,3 @@
-import '../../core/values/constants.dart';
-
 class Movie {
   final int id;
   final String title;
@@ -21,6 +19,4 @@ class Movie {
       voteAverage: map['vote_average'] * 1.0,
     );
   }
-
-  String get imgUrl => Constants.imageBaseUrl + imgPath;
 }

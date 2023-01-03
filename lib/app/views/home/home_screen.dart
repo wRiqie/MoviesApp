@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:movies_app/app/core/utils/helpers.dart';
 
 import 'package:movies_app/app/global/custom_tab_bar.dart';
 import 'package:movies_app/app/global/search_field.dart';
@@ -26,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   int selectedTabIndex = 0;
   late TabController _tabController;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
@@ -35,6 +38,17 @@ class _HomeScreenState extends State<HomeScreen>
       vsync: this,
       initialIndex: selectedTabIndex,
     );
+    _scrollController = ScrollController();
+    _scrollController.addListener(() { 
+      if (kDebugMode) {
+        print(_scrollController.offset);
+      }
+      if(_scrollController.offset >= _scrollController.position.maxScrollExtent) {
+        if (kDebugMode) {
+          print("Chegou ao fim");
+        }
+      }
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<TrendingMoviesStore>().fetchAll();
@@ -63,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen>
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scrollController,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
@@ -183,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen>
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: Image.network(
-                        state.movies[index].imgUrl,
+                        Helpers.getImageUrl(state.movies[index].imgPath),
                         fit: BoxFit.cover,
                       ),
                     ),
