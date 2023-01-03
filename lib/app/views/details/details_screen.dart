@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:movies_app/app/controllers/details_controller.dart';
+import 'package:lottie/lottie.dart';
 import 'package:movies_app/app/core/theme/app_colors.dart';
 import 'package:movies_app/app/core/values/app_images.dart';
-import 'package:movies_app/app/data/providers/api_provider.dart';
-import 'package:movies_app/app/data/repositories/details_repository.dart';
 import 'package:movies_app/app/global/custom_tab_bar.dart';
 import 'package:movies_app/app/views/details/states/details_state.dart';
 import 'package:movies_app/app/views/details/stores/details_store.dart';
@@ -35,7 +33,7 @@ class _DetailsScreenState extends State<DetailsScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) { 
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<DetailsStore>().fetchAll(widget.movieId);
     });
   }
@@ -51,7 +49,7 @@ class _DetailsScreenState extends State<DetailsScreen>
     List<Widget> tabViews = [
       const AboutTab(),
       const ReviewsTab(),
-      const CastTab(),
+      CastTab(movieId: widget.movieId),
     ];
 
     final store = context.watch<DetailsStore>();
@@ -142,13 +140,23 @@ class _DetailsScreenState extends State<DetailsScreen>
                     const SizedBox(
                       height: 20,
                     ),
-                    IndexedStack(
-                      index: _currentIndex,
-                      children: tabViews,
-                    ),
+                    tabViews[_currentIndex],
                   ],
                 ),
               ),
+              state is LoadingDetailsState
+                  ? Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.6),
+                      child: Center(
+                        child: Lottie.asset(AppImages.loading),
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),

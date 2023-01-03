@@ -11,7 +11,7 @@ class AboutTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final store = context.read<DetailsStore>();
+    final store = context.watch<DetailsStore>();
     final state = store.value;
 
     if (state is SuccessDetailsState) {

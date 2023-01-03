@@ -1,54 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movies_app/app/core/values/app_images.dart';
+import 'package:movies_app/app/global/skeleton_card.dart';
+import 'package:movies_app/app/views/details/states/cast_state.dart';
+import 'package:movies_app/app/views/details/stores/cast_store.dart';
+import 'package:movies_app/app/views/home/stores/movie_store.dart';
+import 'package:provider/provider.dart';
 
-class CastTab extends StatelessWidget {
-  const CastTab({super.key});
+class CastTab extends StatefulWidget {
+  final int movieId;
+  const CastTab({super.key, required this.movieId});
+
+  @override
+  State<CastTab> createState() => _CastTabState();
+}
+
+class _CastTabState extends State<CastTab> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<CastStore>().fetchAll(widget.movieId);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: Wrap(
-        alignment: WrapAlignment.spaceBetween,
-        runSpacing: 24,
-        children: [
-          _buildCast(
-            context,
-            actorName: 'Tom Holland',
-            actorPhoto: AppImages.actorOne,
+    final store = context.watch<CastStore>();
+    final state = store.value;
+
+    if (state is LoadingCastState) {
+      return _buildCasts(
+        [
+          SkeletonCard(
+            width: MediaQuery.of(context).size.width * .35,
+            height: MediaQuery.of(context).size.width * .35,
+            radius: BorderRadius.circular(MediaQuery.of(context).size.width * .35),
           ),
-          _buildCast(
-            context,
-            actorName: 'Zendaya',
-            actorPhoto: AppImages.actorTwo,
+          SkeletonCard(
+            width: MediaQuery.of(context).size.width * .35,
+            height: MediaQuery.of(context).size.width * .35,
+            radius: BorderRadius.circular(MediaQuery.of(context).size.width * .35),
           ),
-          _buildCast(
-            context,
-            actorName: 'Benedict Cumberbatch',
-            actorPhoto: AppImages.actorThree,
+          SkeletonCard(
+            width: MediaQuery.of(context).size.width * .35,
+            height: MediaQuery.of(context).size.width * .35,
+            radius: BorderRadius.circular(MediaQuery.of(context).size.width * .35),
           ),
-          _buildCast(
-            context,
-            actorName: 'Jacob Batalon',
-            actorPhoto: AppImages.actorFour,
+          SkeletonCard(
+            width: MediaQuery.of(context).size.width * .35,
+            height: MediaQuery.of(context).size.width * .35,
+            radius: BorderRadius.circular(MediaQuery.of(context).size.width * .35),
           ),
         ],
-      ),
-    );
+      );
+    }
+    if (state is SuccessCastState) {
+      return _buildCasts(
+        state.movieActors.actors
+            .map(
+              (e) => _buildCast(
+                context,
+                actorPhoto: e.profilePhoto,
+                actorName: e.name,
+              ),
+            )
+            .toList(),
+      );
+    }
+    return Container();
   }
 
   Widget _buildCast(BuildContext context,
-      {required String actorPhoto, required String actorName}) {
+      {required String? actorPhoto, required String actorName}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CircleAvatar(
-          backgroundImage: AssetImage(
-            actorPhoto,
-          ),
-          radius: (MediaQuery.of(context).size.width * .35) / 2,
-        ),
+        actorPhoto != null
+            ? CircleAvatar(
+                backgroundImage: NetworkImage(actorPhoto),
+                radius: (MediaQuery.of(context).size.width * .35) / 2,
+              )
+            : CircleAvatar(
+                backgroundImage: const AssetImage(AppImages.noPhoto),
+                backgroundColor: Theme.of(context).colorScheme.onBackground,
+                radius: (MediaQuery.of(context).size.width * .35) / 2,
+              ),
         const SizedBox(
           height: 8,
         ),
@@ -63,6 +100,16 @@ class CastTab extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildCasts(List<Widget> casts) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          runSpacing: 24,
+          children: casts),
     );
   }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:movies_app/app/controllers/home_controller.dart';
-import 'package:movies_app/app/data/providers/api_provider.dart';
-import 'package:movies_app/app/data/repositories/movie_repository.dart';
+
 import 'package:movies_app/app/global/custom_tab_bar.dart';
 import 'package:movies_app/app/global/search_field.dart';
 import 'package:movies_app/app/global/skeleton_card.dart';
@@ -28,9 +26,6 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   int selectedTabIndex = 0;
   late TabController _tabController;
-  final _controller = HomeController(
-    MovieRepository(ApiProvider()),
-  );
 
   @override
   void initState() {
@@ -40,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen>
       vsync: this,
       initialIndex: selectedTabIndex,
     );
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<TrendingMoviesStore>().fetchAll();
     });
@@ -52,6 +48,13 @@ class _HomeScreenState extends State<HomeScreen>
       'Upcoming',
       'Top rated',
       'Popular',
+    ];
+
+    List<Widget> tabViews = const [
+      MoviesWrap<NowPlayingMoviesStore>(),
+      MoviesWrap<UpcomingMoviesStore>(),
+      MoviesWrap<TopRatedMoviesStore>(),
+      MoviesWrap<PopularMoviesStore>(),
     ];
 
     final store = context.watch<TrendingMoviesStore>();
@@ -106,15 +109,7 @@ class _HomeScreenState extends State<HomeScreen>
                 const SizedBox(
                   height: 20,
                 ),
-                IndexedStack(
-                  index: selectedTabIndex,
-                  children: const [
-                    MoviesWrap<NowPlayingMoviesStore>(),
-                    MoviesWrap<UpcomingMoviesStore>(),
-                    MoviesWrap<TopRatedMoviesStore>(),
-                    MoviesWrap<PopularMoviesStore>(),
-                  ],
-                )
+                tabViews[selectedTabIndex],
               ],
             ),
           ),

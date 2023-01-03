@@ -12,7 +12,7 @@ class DetailsStore extends ValueNotifier<DetailsState> {
     if(details != null) {
       value = SuccessDetailsState(details);
     } else {
-      value = ErrorDetailsState("Detalhes não foram encontrados");
+      value = ErrorDetailsState("Details not found!");
     }
   }
 }
