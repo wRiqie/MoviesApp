@@ -2,20 +2,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movies_app/app/core/utils/helpers.dart';
+import 'package:movies_app/app/data/models/movie.dart';
+import 'package:movies_app/app/data/providers/api_provider.dart';
+import 'package:movies_app/app/data/repositories/movie_repository.dart';
 
 import 'package:movies_app/app/global/custom_tab_bar.dart';
 import 'package:movies_app/app/global/search_field.dart';
 import 'package:movies_app/app/global/skeleton_card.dart';
 import 'package:movies_app/app/global/stroke_text.dart';
 import 'package:movies_app/app/views/details/details_screen.dart';
-import 'package:movies_app/app/views/home/states/movies_state.dart';
-import 'package:movies_app/app/views/home/stores/now_playing_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/popular_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/top_rated_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/trending_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/upcoming_movies_store.dart';
+import 'package:movies_app/app/views/home/bloc/movie_event.dart';
+import 'package:movies_app/app/views/home/bloc/movie_state.dart';
 import 'package:movies_app/app/views/home/tabs/movies_wrap.dart';
-import 'package:provider/provider.dart';
+
+import 'bloc/movie_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,29 +30,37 @@ class _HomeScreenState extends State<HomeScreen>
   late TabController _tabController;
   late ScrollController _scrollController;
 
+  late final MovieBloc bloc;
+
   @override
   void initState() {
     super.initState();
+    bloc = MovieBloc(MovieRepository(ApiProvider<Movie>()));
+    bloc.inputMovie.add(LoadTrendingMoviesEvent());
+
     _tabController = TabController(
       length: 4,
       vsync: this,
       initialIndex: selectedTabIndex,
     );
     _scrollController = ScrollController();
-    _scrollController.addListener(() { 
+    _scrollController.addListener(() {
       if (kDebugMode) {
         print(_scrollController.offset);
       }
-      if(_scrollController.offset >= _scrollController.position.maxScrollExtent) {
+      if (_scrollController.offset >=
+          _scrollController.position.maxScrollExtent) {
         if (kDebugMode) {
           print("Chegou ao fim");
         }
       }
     });
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<TrendingMoviesStore>().fetchAll();
-    });
+  }
+  
+  @override
+  void dispose() {
+    bloc.inputMovie.close();
+    super.dispose();
   }
 
   @override
@@ -64,15 +72,16 @@ class _HomeScreenState extends State<HomeScreen>
       'Popular',
     ];
 
-    List<Widget> tabViews = const [
-      MoviesWrap<NowPlayingMoviesStore>(),
-      MoviesWrap<UpcomingMoviesStore>(),
-      MoviesWrap<TopRatedMoviesStore>(),
-      MoviesWrap<PopularMoviesStore>(),
+    List<Widget> tabViews = [
+      MoviesWrap(loadEvent: LoadNowPlayingMoviesEvent()),
+      MoviesWrap(loadEvent: LoadUpcomingMoviesEvent()),
+      MoviesWrap(loadEvent: LoadTopRatedMoviesEvent()),
+      MoviesWrap(loadEvent: LoadPopularMoviesEvent()),
+      // Container(color: Colors.red, width: 100, height: 100,),
+      // Container(color: Colors.green, width: 100, height: 100,),
+      // Container(color: Colors.blue, width: 100, height: 100,),
+      // Container(color: Colors.black, width: 100, height: 100,),
     ];
-
-    final store = context.watch<TrendingMoviesStore>();
-    final state = store.value;
 
     return Scaffold(
       body: SafeArea(
@@ -100,7 +109,12 @@ class _HomeScreenState extends State<HomeScreen>
                 const SizedBox(
                   height: 18,
                 ),
-                trendingMoviesWidget(state) ?? Container(),
+                StreamBuilder(
+                  stream: bloc.stream,
+                  builder: (context, snapshot) => snapshot.data != null
+                      ? (trendingMoviesWidget(snapshot.data!) ?? Container())
+                      : Container(),
+                ),
                 CustomTabBar(
                   tabController: _tabController,
                   onTap: ((value) {
@@ -133,8 +147,8 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget? trendingMoviesWidget(MoviesState state) {
-    if (state is LoadingMoviesState) {
+  Widget? trendingMoviesWidget(MovieState state) {
+    if (state is LoadingMovieState) {
       return SizedBox(
         height: MediaQuery.of(context).size.height * .4,
         child: SingleChildScrollView(
@@ -166,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen>
         ),
       );
     }
-    if (state is SuccessMoviesState) {
+    if (state is SuccessMovieState) {
       return Container(
         constraints:
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .4),
