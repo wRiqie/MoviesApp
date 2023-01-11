@@ -13,11 +13,6 @@ import 'package:movies_app/app/views/dashboard/dashboard_screen.dart';
 import 'package:movies_app/app/views/details/stores/cast_store.dart';
 import 'package:movies_app/app/views/details/stores/details_store.dart';
 import 'package:movies_app/app/views/details/stores/reviews_store.dart';
-import 'package:movies_app/app/views/home/stores/now_playing_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/popular_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/top_rated_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/trending_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/upcoming_movies_store.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -62,16 +57,6 @@ final _providers = [
           ReviewRepository(context.read<ApiProvider<Review>>()))),
 
   // Stores
-  ChangeNotifierProvider(
-      create: ((context) => TrendingMoviesStore(context.read()))),
-  ChangeNotifierProvider(
-      create: ((context) => NowPlayingMoviesStore(context.read()))),
-  ChangeNotifierProvider(
-      create: ((context) => PopularMoviesStore(context.read()))),
-  ChangeNotifierProvider(
-      create: ((context) => TopRatedMoviesStore(context.read()))),
-  ChangeNotifierProvider(
-      create: ((context) => UpcomingMoviesStore(context.read()))),
   ChangeNotifierProvider(create: ((context) => DetailsStore(context.read()))),
   ChangeNotifierProvider(create: ((context) => CastStore(context.read()))),
   ChangeNotifierProvider(create: ((context) => ReviewsStore(context.read()))),
