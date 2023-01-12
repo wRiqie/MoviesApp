@@ -15,6 +15,7 @@ import 'package:movies_app/app/views/home/stores/top_rated_movies_store.dart';
 import 'package:movies_app/app/views/home/stores/trending_movies_store.dart';
 import 'package:movies_app/app/views/home/stores/upcoming_movies_store.dart';
 import 'package:movies_app/app/views/home/tabs/movies_wrap.dart';
+import 'package:movies_app/app/views/home/widgets/trending_movies.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -39,11 +40,12 @@ class _HomeScreenState extends State<HomeScreen>
       initialIndex: selectedTabIndex,
     );
     _scrollController = ScrollController();
-    _scrollController.addListener(() { 
+    _scrollController.addListener(() {
       if (kDebugMode) {
         print(_scrollController.offset);
       }
-      if(_scrollController.offset >= _scrollController.position.maxScrollExtent) {
+      if (_scrollController.offset >=
+          _scrollController.position.maxScrollExtent) {
         if (kDebugMode) {
           print("Chegou ao fim");
         }
@@ -100,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen>
                 const SizedBox(
                   height: 18,
                 ),
-                trendingMoviesWidget(state) ?? Container(),
+                TrendingMoviesWidget(state: state),
                 CustomTabBar(
                   tabController: _tabController,
                   onTap: ((value) {
@@ -131,97 +133,5 @@ class _HomeScreenState extends State<HomeScreen>
         ),
       ),
     );
-  }
-
-  Widget? trendingMoviesWidget(MoviesState state) {
-    if (state is LoadingMoviesState) {
-      return SizedBox(
-        height: MediaQuery.of(context).size.height * .4,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              SkeletonCard(
-                radius: BorderRadius.circular(16),
-                margin: const EdgeInsets.all(15),
-                width: MediaQuery.of(context).size.width * .4,
-              ),
-              SkeletonCard(
-                radius: BorderRadius.circular(16),
-                margin: const EdgeInsets.all(15),
-                width: MediaQuery.of(context).size.width * .4,
-              ),
-              SkeletonCard(
-                radius: BorderRadius.circular(16),
-                margin: const EdgeInsets.all(15),
-                width: MediaQuery.of(context).size.width * .4,
-              ),
-              SkeletonCard(
-                radius: BorderRadius.circular(16),
-                margin: const EdgeInsets.all(15),
-                width: MediaQuery.of(context).size.width * .4,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    if (state is SuccessMoviesState) {
-      return Container(
-        constraints:
-            BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .4),
-        child: ListView.separated(
-          physics: const BouncingScrollPhysics(),
-          scrollDirection: Axis.horizontal,
-          itemCount: state.movies.length,
-          separatorBuilder: (context, index) {
-            return const SizedBox(
-              width: 20,
-            );
-          },
-          itemBuilder: (context, index) {
-            return Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: ((context) => DetailsScreen(
-                              movieId: state.movies[index].id,
-                            )),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    width: MediaQuery.of(context).size.width * .40,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.network(
-                        Helpers.getImageUrl(state.movies[index].imgPath),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                IgnorePointer(
-                  child: Align(
-                    alignment: Alignment.bottomLeft,
-                    child: StrokeText(
-                      text: "${index + 1}",
-                      color: Theme.of(context).colorScheme.background,
-                      fontSize: 96,
-                      strokeWidth: 0.9,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      );
-    }
-    return null;
   }
 }
