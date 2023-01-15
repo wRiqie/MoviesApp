@@ -1,4 +1,3 @@
-import 'package:movies_app/app/core/customTypes/error_func.dart';
 import 'package:movies_app/app/data/models/review.dart';
 import 'package:movies_app/app/data/providers/base_provider.dart';
 
@@ -14,7 +13,6 @@ class ReviewRepository {
     int movieId, {
     int? limit,
     int page = 1,
-    ErrorFunc? onError,
   }) async =>
       await _provider.get(
         path: '/movie/$movieId/reviews',
@@ -24,6 +22,5 @@ class ReviewRepository {
         connectionTimeout: null,
         receiveTimeout: null,
         limit: limit,
-        onError: onError,
       );
 }

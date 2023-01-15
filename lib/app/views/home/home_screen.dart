@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:movies_app/app/global/custom_tab_bar.dart';
 import 'package:movies_app/app/global/search_field.dart';
-import 'package:movies_app/app/global/stores/network_store.dart';
 import 'package:movies_app/app/views/home/stores/now_playing_movies_store.dart';
 import 'package:movies_app/app/views/home/stores/popular_movies_store.dart';
 import 'package:movies_app/app/views/home/stores/top_rated_movies_store.dart';
@@ -47,7 +46,6 @@ class _HomeScreenState extends State<HomeScreen>
     // });
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<NetworkStore>().checkConnection();
       context.read<TrendingMoviesStore>().fetchAll();
     });
   }

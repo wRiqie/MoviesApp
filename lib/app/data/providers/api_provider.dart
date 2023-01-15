@@ -7,7 +7,6 @@ class ApiProvider<T> implements BaseProvider<T> {
       {required String path,
       required String apiKey,
       int? page,
-      Function(String)? onError,
       required T Function(Map<String, dynamic>) fromMap,
       required int? connectionTimeout,
       required int? receiveTimeout,
@@ -20,10 +19,11 @@ class ApiProvider<T> implements BaseProvider<T> {
       ).getAsync(url: path, queryParameters: {'page': page});
 
       if (apiResponse.errorResponse != null) {
-        if (onError != null) {
-          onError(apiResponse.errorResponse?.message ??
-              'Ocorreu um erro inesperado...');
-        }
+        // if (onError != null) {
+        //   onError(apiResponse.errorResponse?.message ??
+        //       'Ocorreu um erro inesperado...');
+        // }
+        //TODO return error
         return [];
       }
 
@@ -38,7 +38,8 @@ class ApiProvider<T> implements BaseProvider<T> {
 
       return list;
     } catch (e) {
-      if (onError != null) onError(e.toString());
+      // if (onError != null) onError(e.toString());
+      //TODO return error
       return [];
     }
   }
@@ -47,7 +48,6 @@ class ApiProvider<T> implements BaseProvider<T> {
   Future<T?> findOne({
     required String path,
     required String apiKey,
-    Function(String)? onError,
     required T Function(Map<String, dynamic> p1) fromMap,
     required int? connectionTimeout,
     required int? receiveTimeout,
@@ -60,10 +60,11 @@ class ApiProvider<T> implements BaseProvider<T> {
       ).getAsync(url: path);
 
       if (apiResponse.errorResponse != null) {
-        if (onError != null) {
-          onError(apiResponse.errorResponse?.message ??
-              'Ocorreu um erro inesperado...');
-        }
+        // if (onError != null) {
+        //   onError(apiResponse.errorResponse?.message ??
+        //       'Ocorreu um erro inesperado...');
+        // }
+        // TODO return error
         return null;
       }
 
@@ -71,7 +72,8 @@ class ApiProvider<T> implements BaseProvider<T> {
 
       return fromMap(result);
     } catch (e) {
-      if (onError != null) onError(e.toString());
+      // if (onError != null) onError(e.toString());
+      // TODO return error
       return null;
     }
   }

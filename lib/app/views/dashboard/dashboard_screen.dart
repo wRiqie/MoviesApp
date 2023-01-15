@@ -104,7 +104,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       width: 60,
                     ),
                     Text(
-                      'There Is No Movie Yet',
+                      'No connection',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.montserrat(
                         fontWeight: FontWeight.w600,
@@ -112,10 +112,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 5,
                     ),
                     Text(
-                      'Find your movie by Type title, categories, years, etc ',
+                      'Try reloading by pressing the button below',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.montserrat(
                         fontWeight: FontWeight.w500,

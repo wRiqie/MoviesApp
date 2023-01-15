@@ -1,1 +1,1 @@
-typedef ErrorFunc = void Function(String);
+// typedef ErrorFunc = void Function(String);
