@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:movies_app/app/core/values/app_images.dart';
+import 'package:movies_app/app/global/states/network_state.dart';
 import 'package:movies_app/app/views/home/home_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../../global/stores/network_store.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -15,9 +20,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   final List<Widget> _pages = [
     const HomeScreen(),
-    const HomeScreen(),
-    const HomeScreen(),
+    Container(
+      color: Colors.red,
+    ),
+    Container(
+      color: Colors.blue,
+    ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<NetworkStore>().checkConnection();
+    });
+  }
 
   void changeTab(int index) {
     setState(() {
@@ -28,6 +45,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final networkstore = context.watch<NetworkStore>();
+    final networkState = networkstore.value;
 
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
@@ -67,10 +86,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onTap: changeTab,
         selectedFontSize: 12,
       ),
-      body: IndexedStack(
-        index: _index,
-        children: _pages,
-      ),
+      body: networkState is SuccessNetworkState
+          ? IndexedStack(
+              index: _index,
+              children: _pages,
+            )
+          : Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * .6,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      AppImages.noData,
+                      width: 60,
+                    ),
+                    Text(
+                      'There Is No Movie Yet',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Find your movie by Type title, categories, years, etc ',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        networkstore.checkConnection();
+                      },
+                      icon: const Icon(Icons.loop),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

@@ -17,4 +17,5 @@ class AppImages {
   static const actorFour = 'assets/img/actor-4.png';
   static const loading = 'assets/animation/loading.json';
   static const noPhoto = 'assets/img/no_photo.png';
+  static const noData = 'assets/img/no_data.png';
 }

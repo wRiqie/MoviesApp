@@ -9,6 +9,7 @@ import 'package:movies_app/app/data/repositories/cast_repository.dart';
 import 'package:movies_app/app/data/repositories/details_repository.dart';
 import 'package:movies_app/app/data/repositories/movie_repository.dart';
 import 'package:movies_app/app/data/repositories/reviews_repository.dart';
+import 'package:movies_app/app/global/stores/network_store.dart';
 import 'package:movies_app/app/views/dashboard/dashboard_screen.dart';
 import 'package:movies_app/app/views/details/stores/cast_store.dart';
 import 'package:movies_app/app/views/details/stores/details_store.dart';
@@ -76,4 +77,5 @@ final _providers = [
   ChangeNotifierProvider(create: ((context) => DetailsStore(context.read()))),
   ChangeNotifierProvider(create: ((context) => CastStore(context.read()))),
   ChangeNotifierProvider(create: ((context) => ReviewsStore(context.read()))),
+  ChangeNotifierProvider(create: ((context) => NetworkStore())),
 ];
