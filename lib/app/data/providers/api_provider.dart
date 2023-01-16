@@ -1,9 +1,12 @@
+import 'package:movies_app/app/data/api/error_response.dart';
+import 'package:movies_app/app/data/models/provider_response.dart';
+
 import '../api/api_request.dart';
 import 'base_provider.dart';
 
 class ApiProvider<T> implements BaseProvider<T> {
   @override
-  Future<List<T>> get(
+  Future<ProviderResponse<List<T>>> get(
       {required String path,
       required String apiKey,
       int? page,
@@ -19,12 +22,7 @@ class ApiProvider<T> implements BaseProvider<T> {
       ).getAsync(url: path, queryParameters: {'page': page});
 
       if (apiResponse.errorResponse != null) {
-        // if (onError != null) {
-        //   onError(apiResponse.errorResponse?.message ??
-        //       'Ocorreu um erro inesperado...');
-        // }
-        //TODO return error
-        return [];
+        return ProviderResponse(content: [], error: apiResponse.errorResponse);
       }
 
       List<T> list = [];
@@ -36,16 +34,19 @@ class ApiProvider<T> implements BaseProvider<T> {
         list.add(fromMap(results[i]));
       }
 
-      return list;
+      return ProviderResponse(content: list);
     } catch (e) {
-      // if (onError != null) onError(e.toString());
-      //TODO return error
-      return [];
+      return ProviderResponse(
+        content: [],
+        error: ErrorResponse.generic(
+          e.toString(),
+        ),
+      );
     }
   }
 
   @override
-  Future<T?> findOne({
+  Future<ProviderResponse<T?>> findOne({
     required String path,
     required String apiKey,
     required T Function(Map<String, dynamic> p1) fromMap,
@@ -60,21 +61,22 @@ class ApiProvider<T> implements BaseProvider<T> {
       ).getAsync(url: path);
 
       if (apiResponse.errorResponse != null) {
-        // if (onError != null) {
-        //   onError(apiResponse.errorResponse?.message ??
-        //       'Ocorreu um erro inesperado...');
-        // }
-        // TODO return error
-        return null;
+        return ProviderResponse(
+          content: null,
+          error: apiResponse.errorResponse,
+        );
       }
 
       final result = apiResponse.response?.data;
 
-      return fromMap(result);
+      return ProviderResponse(content: fromMap(result));
     } catch (e) {
-      // if (onError != null) onError(e.toString());
-      // TODO return error
-      return null;
+      return ProviderResponse(
+        content: null,
+        error: ErrorResponse.generic(
+          e.toString(),
+        ),
+      );
     }
   }
 }

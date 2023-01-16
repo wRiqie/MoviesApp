@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/app/global/error_reload.dart';
 import 'package:movies_app/app/views/home/states/movies_state.dart';
 
 import '../../../core/utils/helpers.dart';
@@ -8,7 +9,8 @@ import '../../details/details_screen.dart';
 
 class TrendingMoviesWidget extends StatelessWidget {
   final MoviesState state;
-  const TrendingMoviesWidget({super.key, required this.state});
+  final VoidCallback? reload;
+  const TrendingMoviesWidget({super.key, required this.state, this.reload});
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +45,7 @@ class TrendingMoviesWidget extends StatelessWidget {
           ),
         ),
       );
-    }
-    else if (state is SuccessMoviesState) {
+    } else if (state is SuccessMoviesState) {
       return Container(
         constraints:
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .4),
@@ -65,7 +66,9 @@ class TrendingMoviesWidget extends StatelessWidget {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: ((context) => DetailsScreen(
-                              movieId: (state as SuccessMoviesState).movies[index].id,
+                              movieId: (state as SuccessMoviesState)
+                                  .movies[index]
+                                  .id,
                             )),
                       ),
                     );
@@ -76,7 +79,9 @@ class TrendingMoviesWidget extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: Image.network(
-                        Helpers.getImageUrl((state as SuccessMoviesState).movies[index].imgPath),
+                        Helpers.getImageUrl((state as SuccessMoviesState)
+                            .movies[index]
+                            .imgPath),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -97,6 +102,14 @@ class TrendingMoviesWidget extends StatelessWidget {
               ],
             );
           },
+        ),
+      );
+    } else if (state is ErrorMoviesState) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: ErrorReload(
+          errorMessage: (state as ErrorMoviesState).error.message,
+          reload: reload,
         ),
       );
     }

@@ -1,5 +1,7 @@
+import 'package:movies_app/app/data/models/provider_response.dart';
+
 abstract class BaseProvider<T> {
-  Future<T?> findOne({
+  Future<ProviderResponse<T?>> findOne({
     required String path,
     required String apiKey,
     required T Function(Map<String, dynamic>) fromMap,
@@ -7,7 +9,7 @@ abstract class BaseProvider<T> {
     required int? receiveTimeout,
   });
 
-  Future<List<T>> get({
+  Future<ProviderResponse<List<T>>> get({
     required String path,
     required String apiKey,
     int? page,

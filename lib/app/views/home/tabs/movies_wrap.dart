@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movies_app/app/core/utils/helpers.dart';
+import 'package:movies_app/app/global/error_reload.dart';
 import 'package:movies_app/app/global/skeleton_card.dart';
 import 'package:movies_app/app/views/details/details_screen.dart';
 import 'package:movies_app/app/views/home/states/movies_state.dart';
@@ -83,35 +84,49 @@ class _MoviesWrapState<T extends MovieStore> extends State<MoviesWrap> {
           )
           .toList();
     }
+    if (state is ErrorMoviesState) {
+      children = [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: ErrorReload(
+            errorMessage: state.error.message,
+            reload: context.read<T>().fetchAll,
+          ),
+        ),
+      ];
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        InkWell(
-          onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 5,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'See more',
-                  style: GoogleFonts.poppins(
+        Visibility(
+          visible: state is! ErrorMoviesState,
+          child: InkWell(
+            onTap: () {},
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 5,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'See more',
+                    style: GoogleFonts.poppins(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 5,
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

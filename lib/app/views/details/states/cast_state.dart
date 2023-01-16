@@ -1,3 +1,4 @@
+import 'package:movies_app/app/data/api/error_response.dart';
 import 'package:movies_app/app/data/models/movie_actors.dart';
 
 abstract class CastState {}
@@ -13,7 +14,7 @@ class SuccessCastState extends CastState {
 }
 
 class ErrorCastState extends CastState {
-  final String message;
+  final ErrorResponse error;
 
-  ErrorCastState(this.message);
+  ErrorCastState(this.error);
 }

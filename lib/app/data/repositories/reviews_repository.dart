@@ -3,13 +3,14 @@ import 'package:movies_app/app/data/providers/base_provider.dart';
 
 import '../../core/utils/env_util.dart';
 import '../../core/values/constants.dart';
+import '../models/provider_response.dart';
 
 class ReviewRepository {
   final BaseProvider<Review> _provider;
 
   ReviewRepository(this._provider);
 
-  Future<List<Review>> getReviews(
+  Future<ProviderResponse<List<Review>>> getReviews(
     int movieId, {
     int? limit,
     int page = 1,

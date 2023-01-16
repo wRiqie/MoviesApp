@@ -1,3 +1,4 @@
+import 'package:movies_app/app/data/api/error_response.dart';
 import 'package:movies_app/app/data/models/review.dart';
 
 abstract class ReviewsState {}
@@ -13,7 +14,7 @@ class SuccessReviewsState extends ReviewsState {
 }
 
 class ErrorReviewsState extends ReviewsState {
-  final String message;
+  final ErrorResponse error;
 
-  ErrorReviewsState(this.message);
+  ErrorReviewsState(this.error);
 }

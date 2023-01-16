@@ -94,7 +94,10 @@ class _HomeScreenState extends State<HomeScreen>
                 const SizedBox(
                   height: 18,
                 ),
-                TrendingMoviesWidget(state: state),
+                TrendingMoviesWidget(
+                  state: state,
+                  reload: context.read<TrendingMoviesStore>().fetchAll,
+                ),
                 CustomTabBar(
                   tabController: _tabController,
                   onTap: ((value) {

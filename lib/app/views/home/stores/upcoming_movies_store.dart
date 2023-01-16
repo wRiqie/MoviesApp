@@ -16,9 +16,13 @@ class UpcomingMoviesStore extends ValueNotifier<MoviesState>
     try {
       value = LoadingMoviesState();
       final movies = await _repository.getUpcoming();
-      value = SuccessMoviesState(movies);
+      if (movies.error != null) {
+        value = ErrorMoviesState(movies.error!);
+      } else {
+        value = SuccessMoviesState(movies.content);
+      }
     } catch (e) {
-      final errorResponse = ErrorResponse(code: 0, message: e.toString());
+      final errorResponse = ErrorResponse.generic(e.toString());
       value = ErrorMoviesState(errorResponse);
     }
   }
