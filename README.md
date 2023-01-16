@@ -9,4 +9,4 @@ Using the design available at https://www.figma.com/community/file/1124835379376
 2. Run "flutter pub get" in terminal
 3. Create an ".env" file in the project root with a single line: "apiKey=yourMovieDbApiKey"
 4. Create a TMDB account(https://www.themoviedb.org) and get an api key v3
-6. Run "flutter run" in terminal
+5. Run "flutter run" in terminal
