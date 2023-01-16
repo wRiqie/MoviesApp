@@ -14,9 +14,6 @@ class TrendingMoviesStore extends ValueNotifier<MoviesState>
   Future<void> fetchAll() async {
     if (value is SuccessMoviesState) return;
     try {
-      // final errorResponse = ErrorResponse.generic('Não foi possível encontrar os filmes');
-      // value = ErrorMoviesState(errorResponse);
-      // return;
       value = LoadingMoviesState();
       final movies = await _repository.getTrendingWeek();
       if (movies.error != null) {
