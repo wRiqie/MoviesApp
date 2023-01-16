@@ -1,16 +1,12 @@
 # movies_app
 
-A new Flutter project.
+an app for watching and saving your favorite movies
 
-## Getting Started
+Using the design available at https://www.figma.com/community/file/1124835379376527920
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## How to run the project
+1. Check if you are using flutter version 3.3.10
+2. Run "flutter pub get" in terminal
+3. Create a TMDB account(https://www.themoviedb.org) and get an api key v3
+4. Create an ".env" file in the project root with a single line: "apiKey=yourMovieDbApiKey"
+5. Run "flutter run" in terminal
