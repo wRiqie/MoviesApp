@@ -4,5 +4,5 @@ import 'package:movies_app/app/views/home/states/movies_state.dart';
 abstract class MovieStore extends ValueNotifier<MoviesState> {
   MovieStore() : super(InitialMoviesState());
 
-  Future<void> fetchAll();
+  Future<void> fetchAll({int? page, int? limit});
 }

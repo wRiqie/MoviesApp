@@ -11,11 +11,11 @@ class UpcomingMoviesStore extends ValueNotifier<MoviesState>
   UpcomingMoviesStore(this._repository) : super(InitialMoviesState());
 
   @override
-  Future<void> fetchAll() async {
+  Future<void> fetchAll({int? page, int? limit}) async {
     if (value is SuccessMoviesState) return;
     try {
       value = LoadingMoviesState();
-      final movies = await _repository.getUpcoming();
+      final movies = await _repository.getUpcoming(page: page, limit: limit);
       if (movies.error != null) {
         value = ErrorMoviesState(movies.error!);
       } else {

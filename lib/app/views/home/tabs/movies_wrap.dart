@@ -6,6 +6,7 @@ import 'package:movies_app/app/global/skeleton_card.dart';
 import 'package:movies_app/app/views/details/details_screen.dart';
 import 'package:movies_app/app/views/home/states/movies_state.dart';
 import 'package:movies_app/app/views/home/stores/movie_store.dart';
+import 'package:movies_app/app/views/movie_list/movie_list_screen.dart';
 import 'package:provider/provider.dart';
 
 class MoviesWrap<T extends MovieStore> extends StatefulWidget {
@@ -100,12 +101,20 @@ class _MoviesWrapState<T extends MovieStore> extends State<MoviesWrap> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Visibility(
-          visible: state is! ErrorMoviesState,
+          visible: state is SuccessMoviesState,
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              if (state is SuccessMoviesState) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => MovieListScreen<T>(),
+                  ),
+                );
+              }
+            },
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: 10,
+                vertical: 5,
                 horizontal: 5,
               ),
               child: Row(
@@ -130,12 +139,15 @@ class _MoviesWrapState<T extends MovieStore> extends State<MoviesWrap> {
             ),
           ),
         ),
-        Wrap(
-          spacing: 20,
-          alignment: WrapAlignment.start,
-          direction: Axis.horizontal,
-          runSpacing: 20,
-          children: children ?? [],
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Wrap(
+            spacing: 20,
+            alignment: WrapAlignment.start,
+            direction: Axis.horizontal,
+            runSpacing: 20,
+            children: children ?? [],
+          ),
         ),
       ],
     );
