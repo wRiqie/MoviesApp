@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:movies_app/app/core/values/app_images.dart';
-import 'package:movies_app/app/global/states/network_state.dart';
-import 'package:movies_app/app/views/home/home_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/values/app_images.dart';
+import '../../global/no_content.dart';
+import '../../global/states/network_state.dart';
 import '../../global/stores/network_store.dart';
+import '../home/home_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -86,53 +86,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onTap: changeTab,
         selectedFontSize: 12,
       ),
-      body: networkState is SuccessNetworkState
-          ? IndexedStack(
-              index: _index,
-              children: _pages,
-            )
-          : Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * .6,
+      body: Stack(
+        children: [
+          networkState is SuccessNetworkState
+              ? IndexedStack(
+                  index: _index,
+                  children: _pages,
+                )
+              : NoContent(
+                  title: 'No connection',
+                  label: 'Try reloading by pressing the button below',
+                  onTap: networkstore.checkConnection,
+                  icon: Icons.loop,
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      AppImages.noData,
-                      width: 60,
-                    ),
-                    Text(
-                      'No connection',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      'Try reloading by pressing the button below',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        networkstore.checkConnection();
-                      },
-                      icon: const Icon(Icons.loop),
-                    ),
-                  ],
-                ),
-              ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 1,
+              color: Theme.of(context).colorScheme.primary,
             ),
+          )
+        ],
+      ),
     );
   }
 }
