@@ -4,34 +4,28 @@ import 'package:movies_app/app/core/utils/helpers.dart';
 import 'package:movies_app/app/global/error_reload.dart';
 import 'package:movies_app/app/global/skeleton_card.dart';
 import 'package:movies_app/app/views/details/details_screen.dart';
-import 'package:movies_app/app/views/home/states/movies_state.dart';
-import 'package:movies_app/app/views/home/stores/movie_store.dart';
 import 'package:movies_app/app/views/movie_list/movie_list_screen.dart';
-import 'package:provider/provider.dart';
 
-class MoviesWrap<T extends MovieStore> extends StatefulWidget {
+class MoviesWrap extends StatefulWidget {
+  final VoidCallback loadMovies;
   const MoviesWrap({
     super.key,
+    required this.loadMovies,
   });
 
   @override
-  State<MoviesWrap> createState() => _MoviesWrapState<T>();
+  State<MoviesWrap> createState() => _MoviesWrapState();
 }
 
-class _MoviesWrapState<T extends MovieStore> extends State<MoviesWrap> {
+class _MoviesWrapState extends State<MoviesWrap> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<T>().fetchAll();
-    });
+    widget.loadMovies();
   }
 
   @override
   Widget build(BuildContext context) {
-    final store = context.watch<T>();
-    final state = store.value;
-
     List<Widget>? children;
 
     if (state is LoadingMoviesState) {
@@ -77,7 +71,7 @@ class _MoviesWrapState<T extends MovieStore> extends State<MoviesWrap> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.network(
-                  Helpers.getImageUrl(e.imgPath),
+                  AppHelpers.getImageUrl(e.imgPath),
                   width: MediaQuery.of(context).size.width * .25,
                 ),
               ),

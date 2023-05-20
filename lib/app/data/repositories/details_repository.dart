@@ -1,20 +1,15 @@
-import 'package:movies_app/app/data/models/movie_details.dart';
-import 'package:movies_app/app/data/models/provider_response.dart';
-
-import '../../core/utils/env_util.dart';
-import '../../core/values/constants.dart';
-import '../providers/base_provider.dart';
+import 'package:movies_app/app/data/datasources/details_datasource.dart';
+import 'package:movies_app/app/data/models/default_response_model.dart';
+import 'package:movies_app/app/data/models/movie_details_model.dart';
+import 'package:movies_app/app/data/service/execute_service.dart';
 
 class DetailsRepository {
-  final BaseProvider<MovieDetails> _provider;
-  DetailsRepository(this._provider);
+  final DetailsDatasource _detailsDatasource;
 
-  Future<ProviderResponse<MovieDetails?>> getDetails({required int movieId}) async =>
-      await _provider.findOne(
-        path: '/movie/$movieId',
-        apiKey: await EnvUtil.get(Constants.apiKey),
-        fromMap: MovieDetails.fromMap,
-        connectionTimeout: null,
-        receiveTimeout: null,
-      );
+  DetailsRepository(this._detailsDatasource);
+
+  Future<DefaultResponseModel<MovieDetailsModel?>> getDetails(int movieId) {
+    return ExecuteService.tryExecuteAsync(
+        execute: () => _detailsDatasource.getDetails(movieId: movieId));
+  }
 }

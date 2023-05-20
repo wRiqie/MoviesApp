@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:movies_app/app/business_logic/cubits/network/network_cubit.dart';
+import 'package:movies_app/app/business_logic/cubits/network/network_state.dart';
 import 'package:movies_app/app/core/values/app_images.dart';
-import 'package:movies_app/app/global/states/network_state.dart';
 import 'package:movies_app/app/views/home/home_screen.dart';
-import 'package:provider/provider.dart';
-
-import '../../global/stores/network_store.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -31,9 +30,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<NetworkStore>().checkConnection();
-    });
+    BlocProvider.of<NetworkCubit>(context).checkConnection();
   }
 
   void changeTab(int index) {
@@ -45,8 +42,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final networkstore = context.watch<NetworkStore>();
-    final networkState = networkstore.value;
 
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
@@ -86,12 +81,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onTap: changeTab,
         selectedFontSize: 12,
       ),
-      body: networkState is SuccessNetworkState
-          ? IndexedStack(
+      body: BlocBuilder<NetworkCubit, NetworkState>(
+        builder: (context, state) {
+          if (state.status.isConnected) {
+            return IndexedStack(
               index: _index,
               children: _pages,
-            )
-          : Center(
+            );
+          } else if (state.status.isDisconnected) {
+            return Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxWidth: MediaQuery.of(context).size.width * .6,
@@ -125,14 +123,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     IconButton(
                       onPressed: () {
-                        networkstore.checkConnection();
+                        BlocProvider.of<NetworkCubit>(context)
+                            .checkConnection();
                       },
                       icon: const Icon(Icons.loop),
                     ),
                   ],
                 ),
               ),
-            ),
+            );
+          } else {
+            return Container();
+          }
+        },
+      ),
     );
   }
 }

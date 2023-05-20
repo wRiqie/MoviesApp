@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:movies_app/app/business_logic/blocs/movie_bloc.dart';
+import 'package:movies_app/app/business_logic/blocs/movie_event.dart';
 
 import 'package:movies_app/app/global/custom_tab_bar.dart';
 import 'package:movies_app/app/global/search_field.dart';
-import 'package:movies_app/app/views/home/stores/now_playing_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/popular_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/top_rated_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/trending_movies_store.dart';
-import 'package:movies_app/app/views/home/stores/upcoming_movies_store.dart';
-import 'package:movies_app/app/views/home/tabs/movies_wrap.dart';
-import 'package:movies_app/app/views/home/widgets/trending_movies.dart';
-import 'package:provider/provider.dart';
+import 'package:movies_app/app/views/home/widgets/now_playing_movies_widget.dart';
+import 'package:movies_app/app/views/home/widgets/trending_movies_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,29 +29,15 @@ class _HomeScreenState extends State<HomeScreen>
       vsync: this,
       initialIndex: selectedTabIndex,
     );
-    // _scrollController = ScrollController();
-    // _scrollController.addListener(() {
-    //   if (kDebugMode) {
-    //     print(_scrollController.offset);
-    //   }
-    //   if (_scrollController.offset >=
-    //       _scrollController.position.maxScrollExtent) {
-    //     if (kDebugMode) {
-    //       print("Chegou ao fim");
-    //     }
-    //   }
-    // });
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<TrendingMoviesStore>().fetchAll();
-    });
+    BlocProvider.of<MovieBloc>(context).add(MovieGetTopRatedEvent());
   }
 
   List<Widget> tabViews = const [
-    MoviesWrap<NowPlayingMoviesStore>(),
-    MoviesWrap<UpcomingMoviesStore>(),
-    MoviesWrap<TopRatedMoviesStore>(),
-    MoviesWrap<PopularMoviesStore>(),
+    NowPlayingMoviesWidget(),
+    // MoviesWrap<UpcomingMoviesStore>(),
+    // MoviesWrap<TopRatedMoviesStore>(),
+    // MoviesWrap<PopularMoviesStore>(),
   ];
 
   @override
@@ -65,9 +48,6 @@ class _HomeScreenState extends State<HomeScreen>
       'Top rated',
       'Popular',
     ];
-
-    final store = context.watch<TrendingMoviesStore>();
-    final state = store.value;
 
     return Scaffold(
       body: SafeArea(
@@ -94,10 +74,7 @@ class _HomeScreenState extends State<HomeScreen>
                 const SizedBox(
                   height: 18,
                 ),
-                TrendingMoviesWidget(
-                  state: state,
-                  reload: context.read<TrendingMoviesStore>().fetchAll,
-                ),
+                const TrendingMoviesWidget(),
                 CustomTabBar(
                   tabController: _tabController,
                   onTap: ((value) {

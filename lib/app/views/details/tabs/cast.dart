@@ -78,7 +78,7 @@ class _CastTabState extends State<CastTab> {
       children: [
         actorPhoto != null
             ? CircleAvatar(
-                backgroundImage: NetworkImage(Helpers.getImageUrl(actorPhoto)),
+                backgroundImage: NetworkImage(AppHelpers.getImageUrl(actorPhoto)),
                 radius: (MediaQuery.of(context).size.width * .35) / 2,
               )
             : CircleAvatar(

@@ -1,5 +1,5 @@
 import 'package:movies_app/app/data/api/error_response.dart';
-import 'package:movies_app/app/data/models/review.dart';
+import 'package:movies_app/app/data/models/review_model.dart';
 
 abstract class ReviewsState {}
 
@@ -8,7 +8,7 @@ class InitialReviewsState extends ReviewsState {}
 class LoadingReviewsState extends ReviewsState {}
 
 class SuccessReviewsState extends ReviewsState {
-  final List<Review> reviews;
+  final List<ReviewModel> reviews;
 
   SuccessReviewsState(this.reviews);
 }

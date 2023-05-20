@@ -11,13 +11,11 @@ import 'package:movies_app/app/views/details/stores/details_store.dart';
 import 'package:movies_app/app/views/details/tabs/about.dart';
 import 'package:movies_app/app/views/details/tabs/cast.dart';
 import 'package:movies_app/app/views/details/tabs/reviews.dart';
-import 'package:provider/provider.dart';
 
 class DetailsScreen extends StatefulWidget {
-  final int movieId;
   const DetailsScreen({
     super.key,
-    required this.movieId,
+    // required this.movieId,
   });
 
   @override
@@ -201,7 +199,7 @@ class _DetailsScreenState extends State<DetailsScreen>
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-              Helpers.getImageUrl(state.details.backdropPath),
+              AppHelpers.getImageUrl(state.details.backdropPath),
             ),
             fit: BoxFit.cover,
           ),
@@ -237,7 +235,7 @@ class _DetailsScreenState extends State<DetailsScreen>
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Image.network(
-              Helpers.getImageUrl(state.details.posterPath),
+              AppHelpers.getImageUrl(state.details.posterPath),
               width: 95,
             ),
           ),

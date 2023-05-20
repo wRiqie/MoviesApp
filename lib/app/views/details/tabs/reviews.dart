@@ -4,7 +4,7 @@ import 'package:movies_app/app/views/details/states/reviews_state.dart';
 import 'package:movies_app/app/views/details/stores/reviews_store.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/models/review.dart';
+import '../../../data/models/review_model.dart';
 
 class ReviewsTab extends StatefulWidget {
   final int movieId;
@@ -37,7 +37,7 @@ class _ReviewsTabState extends State<ReviewsTab> {
     if (state is SuccessReviewsState) {
       return Column(
         children: state.reviews
-            .map((Review e) => Container(
+            .map((ReviewModel e) => Container(
               margin: const EdgeInsets.only(bottom: 32),
               child: Comment(
                     nickname: e.author,

@@ -1,27 +1,16 @@
-import 'package:movies_app/app/data/models/review.dart';
-import 'package:movies_app/app/data/providers/base_provider.dart';
+import 'package:movies_app/app/data/datasources/reviews_datasource.dart';
+import 'package:movies_app/app/data/models/default_response_model.dart';
+import 'package:movies_app/app/data/models/review_model.dart';
+import 'package:movies_app/app/data/service/execute_service.dart';
 
-import '../../core/utils/env_util.dart';
-import '../../core/values/constants.dart';
-import '../models/provider_response.dart';
+class ReviewsRepository {
+  final ReviewsDatasource _reviewsDatasource;
 
-class ReviewRepository {
-  final BaseProvider<Review> _provider;
+  ReviewsRepository(this._reviewsDatasource);
 
-  ReviewRepository(this._provider);
-
-  Future<ProviderResponse<List<Review>>> getReviews(
-    int movieId, {
-    int? limit,
-    int page = 1,
-  }) async =>
-      await _provider.get(
-        path: '/movie/$movieId/reviews',
-        apiKey: await EnvUtil.get(Constants.apiKey),
-        page: page,
-        fromMap: Review.fromMap,
-        connectionTimeout: null,
-        receiveTimeout: null,
-        limit: limit,
-      );
+  Future<DefaultResponseModel<List<ReviewModel>>> getReviews(int movieId,
+      {int page = 1}) {
+    return ExecuteService.tryExecuteAsync(
+        execute: () => _reviewsDatasource.getReviews(movieId, page: page));
+  }
 }

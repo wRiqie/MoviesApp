@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ErrorReload extends StatelessWidget {
-  final String errorMessage;
+  final String? errorMessage;
   final VoidCallback? reload;
   const ErrorReload({super.key, required this.errorMessage, this.reload});
 
@@ -22,7 +22,7 @@ class ErrorReload extends StatelessWidget {
               ),
             ),
             Text(
-              errorMessage,
+              errorMessage ?? 'An error ocurred, please try again...',
               overflow: TextOverflow.ellipsis,
               maxLines: 3,
               textAlign: TextAlign.center,

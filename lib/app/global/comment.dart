@@ -28,7 +28,7 @@ class Comment extends StatelessWidget {
               photoPath != null
                   ? CircleAvatar(
                       backgroundImage: NetworkImage(
-                        Helpers.getImageUrl(photoPath!),
+                        AppHelpers.getImageUrl(photoPath!),
                       ),
                       minRadius: 22,
                       maxRadius: 22,
